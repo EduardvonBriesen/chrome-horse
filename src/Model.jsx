@@ -12,24 +12,13 @@ export function Model(props) {
   return (
     <group ref={group} {...props} dispose={null}>
       <group name='Scene'>
-        <directionalLight
-          intensity={100}
-          decay={2}
-          color='#fffdf4'
-          position={[-4.778, 4.051, -0.697]}
-          rotation={[1.303, -0.602, 1.21]}
-          scale={[-1.66, -0.14, -1]}
-          target={nodes.Light.target}
-        >
-          <primitive object={nodes.Light.target} position={[0, 0, -1]} />
-        </directionalLight>
         <mesh
           name='Horse'
           geometry={nodes.Horse.geometry}
           material={materials["Material.001"]}
-          position={[-1.672, -0.088, 0.776]}
-          rotation={[-0.041, -0.693, -3.042]}
-          scale={-0.051}
+          position={[0, 0, 0]}
+          rotation={[0, 1, 0]}
+          scale={1}
         />
       </group>
     </group>

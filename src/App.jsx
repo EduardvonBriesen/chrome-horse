@@ -12,8 +12,8 @@ const App = () => {
       <Stage controls={ref} intensity={1} environment={null} shadows={false}>
         <Model />
         <SceneLight />
-        <Environment files={"/THAZERO-WORLD-TEXTURE.hdr"} />
-        {/* <Environment preset='city' /> */}
+        {/* <Environment files={"/THAZERO-WORLD-TEXTURE.hdr"} />*/}
+        <Environment preset='studio' />
       </Stage>
       <OrbitControls ref={ref} />
     </Canvas>

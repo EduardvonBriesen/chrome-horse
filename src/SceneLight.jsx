@@ -2,10 +2,11 @@ import React, { useRef, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
 
-export function SceneLight({ nodes }) {
-  const light = useRef();
-  const { viewport } = useThree();
-  const mousePos = useRef(new Vector3(0, 0, 5));
+export function SceneLight() {
+  const light = useRef(); // Reference for the light
+  const lightMesh = useRef(); // Reference for the light's visual representation (a small sphere)
+  const { camera } = useThree();
+  const mousePos = useRef(new Vector3(0, 0, 0)); // Mouse position in normalized device coordinates
 
   useEffect(() => {
     const handleMouseMove = event => {
@@ -20,36 +21,44 @@ export function SceneLight({ nodes }) {
 
   useFrame(() => {
     if (light.current) {
-      // Convert normalized coordinates to world space
-      const x = (mousePos.current.x * viewport.width) / 2;
-      const y = (mousePos.current.y * viewport.height) / 2;
+      // Map mouse coordinates to a 2D plane positioned between the camera and the subject
+      const distanceFromCamera = 100; // The plane's distance from the camera
+      const lightPosition = new Vector3(mousePos.current.x * distanceFromCamera, mousePos.current.y * distanceFromCamera, 0);
 
-      // Smoothly update light position
-      light.current.position.x = x * 2;
-      light.current.position.y = y * 2 + 4; // Add offset for better lighting angle
-      light.current.position.z = 3;
+      // Transform the 2D plane coordinates to the camera's local space
+      lightPosition.unproject(camera);
 
-      // Make light look at center
-      if (light.current.target) {
-        light.current.target.position.set(0, 0, 0);
-        light.current.target.updateMatrixWorld();
+      // Set the light's position
+      light.current.position.copy(lightPosition);
+
+      // Update the red sphere (visual representation of the light's position)
+      if (lightMesh.current) {
+        lightMesh.current.position.copy(light.current.position);
       }
+
+      // Make the light look at the subject at position [0, 0, 0]
+      light.current.target.position.set(0, 0, 0);
+      light.current.target.updateMatrixWorld();
     }
   });
 
   return (
-    <directionalLight
-      ref={light}
-      intensity={100}
-      decay={2}
-      color='#fffdf4'
-      position={[-4.778, 4.051, -0.697]}
-      rotation={[1.303, -0.602, 1.21]}
-      scale={[-1.66, -0.14, -1]}
-      target={nodes?.Light?.target}
-    >
-      {nodes?.Light?.target && <primitive object={nodes.Light.target} position={[0, 0, -1]} />}
-      {nodes?.Light?.target && <primitive object={nodes.Light.target} />}
-    </directionalLight>
+    <>
+      {/* Directional Light */}
+      <directionalLight
+        ref={light}
+        castShadow
+        intensity={1.5}
+        position={[0, 0, 5]} // Default position
+      >
+        <object3D ref={light.current?.target} position={[0, 0, 0]} />
+      </directionalLight>
+
+      {/* Visual representation of the light */}
+      {/* <mesh ref={lightMesh}>
+        <sphereBufferGeometry args={[0.1, 16, 16]} />
+        <meshBasicMaterial color='red' />
+      </mesh> */}
+    </>
   );
 }
