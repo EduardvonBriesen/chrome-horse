@@ -19,21 +19,37 @@ const environmentOptions = [
 const App = () => {
   const ref = useRef();
 
-  const { env, envRotation, blackAndWhite } = useControls({
+  const controls = useControls({
     env: {
       value: "office-1",
       options: environmentOptions.reduce((acc, option) => {
         acc[option.label] = option.value;
         return acc;
       }, {}),
+      label: "Environment",
     },
     envRotation: {
       value: 0,
       min: 0,
       max: Math.PI * 2,
       step: 0.01,
+      label: "Rotation",
     },
-    blackAndWhite: true,
+    environmentIntensity: {
+      value: 1,
+      min: 0,
+      max: 10,
+      step: 0.01,
+      label: "Brightness",
+    },
+    blackAndWhite: {
+      value: true,
+      label: "B&W",
+    },
+    compressed: {
+      value: false,
+      label: "Compressed",
+    },
   });
 
   return (
@@ -42,19 +58,21 @@ const App = () => {
         dpr={[1, 2]}
         camera={{ fov: 50 }}
         style={{
-          filter: blackAndWhite ? "grayscale(100%)" : "none",
+          filter: controls.blackAndWhite ? "grayscale(100%)" : "none",
           width: "100%",
           height: "100%",
         }}
       >
         <Stage controls={ref} intensity={1} environment={null} shadows={false}>
-          <Model />
+          <Model compressed={controls.compressed} />
           <SceneLight />
-          {environmentOptions.find(option => option.value === env)?.preset ? (
-            <Environment preset={env} />
-          ) : (
-            <Environment files={`/${env}.hdr`} environmentRotation={[0, envRotation, 0]} />
-          )}
+          <Environment
+            {...(environmentOptions.find(option => option.value === controls.env)?.preset
+              ? { preset: controls.env }
+              : { files: `/${controls.env}.jpg` })}
+            environmentRotation={[0, controls.envRotation, 0]}
+            environmentIntensity={controls.environmentIntensity}
+          />
         </Stage>
         <OrbitControls ref={ref} />
       </Canvas>

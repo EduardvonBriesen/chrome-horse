@@ -5,10 +5,10 @@ import { SkeletonUtils } from "three-stdlib";
 
 export function Model(props) {
   const group = React.useRef();
-  const { scene, animations } = useGLTF("/chrome-horse.glb");
+  const { scene, animations } = useGLTF(props.compressed ? "/chrome-horse-compressed.glb" : "/chrome-horse.glb");
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes, materials } = useGraph(clone);
-  const { actions } = useAnimations(animations, group);
+
   return (
     <group ref={group} {...props} dispose={null}>
       <group name='Scene'>
