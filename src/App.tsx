@@ -1,12 +1,17 @@
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Scene } from "./components/Scene";
+import { AsciiRenderer } from "@react-three/drei";
 
 function App() {
   const controls = useControls({
     blackAndWhite: {
       value: true,
       label: "B&W",
+    },
+    ascii: {
+      value: false,
+      label: "ASCII",
     },
   });
 
@@ -21,6 +26,7 @@ function App() {
           height: "100%",
         }}
       >
+        {controls.ascii && <AsciiRenderer invert={false} resolution={0.1} />}
         <Scene />
       </Canvas>
     </div>
