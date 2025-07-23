@@ -73,6 +73,8 @@ const environmentOptions = [
 export function Scene() {
   const ref = useRef<OrbitControlsType>(null);
 
+  console.log("camera", ref.current);
+
   const controls = useControls({
     env: {
       value: "office-1",
@@ -118,7 +120,7 @@ export function Scene() {
 
   return (
     <>
-      <Stage controls={ref} intensity={1} environment={null} shadows={false}>
+      <Stage controls={ref} environment={null} shadows={false}>
         <Model compressed={controls.compressed} />
         <SceneLight />
         <Environment

@@ -48,21 +48,14 @@ export function SceneLight() {
 
   return (
     <>
-      {/* Directional Light */}
       <directionalLight
         ref={light}
         castShadow
         intensity={1.5}
-        position={[0, 0, 5]} // Default position
+        position={[0, 0, 5]}
       >
         <object3D ref={light.current?.target} position={[0, 0, 0]} />
       </directionalLight>
-
-      {/* Visual representation of the light */}
-      {/* <mesh ref={lightMesh}>
-        <sphereBufferGeometry args={[0.1, 16, 16]} />
-        <meshBasicMaterial color='red' />
-      </mesh> */}
     </>
   );
 }
