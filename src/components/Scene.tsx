@@ -75,37 +75,36 @@ export function Scene() {
 
   console.log("camera", ref.current);
 
-  const controls = useControls({
-    env: {
+  const environment = useControls("Environment", {
+    file: {
       value: "office-1",
       options: environmentOptions.reduce((acc, option) => {
         acc[option.label] = option.value;
         return acc;
       }, {} as Record<string, string>),
-      label: "Environment",
+      label: "File",
     },
-    envShow: {
+    show: {
       value: false,
-      label: "Show Environment",
+      label: "Show",
     },
-    envRotation: {
+    rotation: {
       value: 0,
       min: 0,
       max: Math.PI * 2,
       step: 0.01,
       label: "Rotation",
     },
-    environmentIntensity: {
+    intensity: {
       value: 1,
       min: 0,
       max: 10,
       step: 0.01,
       label: "Brightness",
     },
-    compressed: {
-      value: false,
-      label: "Compressed",
-    },
+  });
+
+  const camera = useControls("Camera", {
     spin: {
       value: false,
       label: "Spin",
@@ -113,27 +112,27 @@ export function Scene() {
   });
 
   useFrame((state) => {
-    if (controls.spin && ref.current) {
+    if (camera.spin && ref.current) {
       ref.current.setAzimuthalAngle(state.clock.elapsedTime * 0.5);
     }
   });
 
   const selectedOption = environmentOptions.find(
-    (option) => option.value === controls.env
+    (option) => option.value === environment.file
   ) as EnvironmentOption;
 
   return (
     <>
       <Stage controls={ref} environment={null} shadows={false}>
-        <Model compressed={controls.compressed} />
+        <Model />
         <SceneLight />
         <Environment
           {...(selectedOption.preset
             ? { preset: selectedOption.preset }
             : { files: selectedOption.files })}
-          environmentRotation={[0, controls.envRotation, 0]}
-          environmentIntensity={controls.environmentIntensity}
-          background={controls.envShow}
+          environmentRotation={[0, environment.rotation, 0]}
+          environmentIntensity={environment.intensity}
+          background={environment.show}
         />
       </Stage>
       <OrbitControls ref={ref} enablePan={false} enableZoom={false} />

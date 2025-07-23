@@ -3,9 +3,10 @@ import { useControls } from "leva";
 import { Scene } from "./components/Scene";
 import { AsciiRenderer, Loader, Stats } from "@react-three/drei";
 import { Suspense } from "react";
+import { EffectComposer, Bloom, Pixelation } from "@react-three/postprocessing";
 
 function App() {
-  const controls = useControls({
+  const controls = useControls("Effects", {
     blackAndWhite: {
       value: true,
       label: "B&W",
@@ -13,6 +14,17 @@ function App() {
     ascii: {
       value: false,
       label: "ASCII",
+    },
+    bloom: {
+      value: false,
+      label: "Bloom",
+    },
+    pixelation: {
+      value: 0,
+      min: 0,
+      max: 20,
+      step: 0.01,
+      label: "Pixelation",
     },
   });
 
@@ -39,6 +51,18 @@ function App() {
           {controls.ascii && <AsciiRenderer invert={false} resolution={0.1} />}
           <Scene />
           <Stats />
+          <EffectComposer>
+            {controls.bloom ? (
+              <Bloom
+                luminanceThreshold={0}
+                luminanceSmoothing={0.9}
+                height={300}
+              />
+            ) : (
+              <></>
+            )}
+            <Pixelation granularity={controls.pixelation} />
+          </EffectComposer>
         </Suspense>
       </Canvas>
       <Loader />

@@ -3,17 +3,25 @@ import { useGraph } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { SkeletonUtils } from "three-stdlib";
 import { useRef, useMemo } from "react";
+import { useControls } from "leva";
 
-export function Model(props: { compressed: boolean }) {
+export function Model() {
   const group = useRef(null);
+
+  const { compressed } = useControls("Model", {
+    compressed: {
+      value: false,
+      label: "Compressed",
+    },
+  });
   const { scene } = useGLTF(
-    props.compressed ? "/chrome-horse-compressed.glb" : "/chrome-horse.glb"
+    compressed ? "/chrome-horse-compressed.glb" : "/chrome-horse.glb"
   );
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes, materials } = useGraph(clone);
 
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} dispose={null}>
       <group name="Scene">
         <mesh
           name="Horse"
