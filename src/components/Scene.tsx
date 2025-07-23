@@ -84,6 +84,10 @@ export function Scene() {
       }, {} as Record<string, string>),
       label: "Environment",
     },
+    envShow: {
+      value: false,
+      label: "Show Environment",
+    },
     envRotation: {
       value: 0,
       min: 0,
@@ -129,6 +133,7 @@ export function Scene() {
             : { files: selectedOption.files })}
           environmentRotation={[0, controls.envRotation, 0]}
           environmentIntensity={controls.environmentIntensity}
+          background={controls.envShow}
         />
       </Stage>
       <OrbitControls ref={ref} enablePan={false} enableZoom={false} />
