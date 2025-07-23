@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Scene } from "./components/Scene";
-import { AsciiRenderer, Loader } from "@react-three/drei";
+import { AsciiRenderer, Loader, Stats } from "@react-three/drei";
 import { Suspense } from "react";
 
 function App() {
@@ -38,6 +38,7 @@ function App() {
         <Suspense fallback={null}>
           {controls.ascii && <AsciiRenderer invert={false} resolution={0.1} />}
           <Scene />
+          <Stats />
         </Suspense>
       </Canvas>
       <Loader />
