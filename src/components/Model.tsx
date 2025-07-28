@@ -28,7 +28,7 @@ export function Model() {
           geometry={(nodes.Horse as Mesh).geometry}
           material={materials["Material.001"]}
           position={[0, 0, 0]}
-          rotation={[0, 1, 0]}
+          rotation={[0, Math.PI / 2, 0]}
           scale={1}
         />
       </group>

@@ -1,10 +1,11 @@
-import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useRef, useEffect, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Stage, Environment } from "@react-three/drei";
 import { useControls } from "leva";
 import { Model } from "./Model";
 import { SceneLight } from "./SceneLight";
 import type { OrbitControls as OrbitControlsType } from "three-stdlib";
+import { Vector2 } from "three";
 
 type PresetType =
   | "studio"
@@ -72,6 +73,9 @@ const environmentOptions = [
 
 export function Scene() {
   const ref = useRef<OrbitControlsType>(null);
+  const { camera } = useThree();
+  const [cameraInitialPosition] = useState(() => camera.position.clone());
+  const mousePos = useRef(new Vector2(0, 0));
 
   console.log("camera", ref.current);
 
@@ -104,18 +108,39 @@ export function Scene() {
     },
   });
 
-  const camera = useControls("Camera", {
+  const cameraControls = useControls("Camera", {
     spin: {
       value: false,
       label: "Spin",
     },
+    followMouse: {
+      value: true,
+      label: "Follow Mouse",
+    },
   });
 
   useFrame((state) => {
-    if (camera.spin && ref.current) {
+    if (cameraControls.spin && ref.current) {
       ref.current.setAzimuthalAngle(state.clock.elapsedTime * 0.5);
     }
+
+    if (cameraControls.followMouse) {
+      camera.position.x = cameraInitialPosition.x - mousePos.current.x * 50;
+      camera.position.y = cameraInitialPosition.y - mousePos.current.y * 50;
+      camera.lookAt(0, 0, 0);
+    }
   });
+
+  useEffect(() => {
+    const handleMouseMove = (event: { clientX: number; clientY: number }) => {
+      mousePos.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mousePos.current.y = -((event.clientY / window.innerHeight) * 2 - 1);
+      console.log("Mouse moved", mousePos.current);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const selectedOption = environmentOptions.find(
     (option) => option.value === environment.file
@@ -125,7 +150,7 @@ export function Scene() {
     <>
       <Stage controls={ref} environment={null} shadows={false}>
         <Model />
-        <SceneLight />
+        <SceneLight mousePos={mousePos.current} />
         <Environment
           {...(selectedOption.preset
             ? { preset: selectedOption.preset }
@@ -135,7 +160,12 @@ export function Scene() {
           background={environment.show}
         />
       </Stage>
-      <OrbitControls ref={ref} enablePan={false} enableZoom={false} />
+      <OrbitControls
+        ref={ref}
+        enablePan={false}
+        enableZoom={false}
+        enabled={!cameraControls.followMouse}
+      />
     </>
   );
 }
