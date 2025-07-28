@@ -24,7 +24,7 @@ export function SceneLight({ mousePos }: { mousePos: Vector2 }) {
     <directionalLight
       ref={light}
       castShadow
-      intensity={1.5}
+      intensity={0.1}
       position={[0, 0, 5]}
     >
       <object3D ref={light.current?.target} position={[0, 0, 0]} />

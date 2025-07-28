@@ -16,7 +16,7 @@ function App() {
       label: "ASCII",
     },
     bloom: {
-      value: false,
+      value: true,
       label: "Bloom",
     },
     pixelation: {
@@ -52,15 +52,7 @@ function App() {
           <Scene />
           <Stats />
           <EffectComposer>
-            {controls.bloom ? (
-              <Bloom
-                luminanceThreshold={0}
-                luminanceSmoothing={0.9}
-                height={300}
-              />
-            ) : (
-              <></>
-            )}
+            {controls.bloom ? <Bloom luminanceThreshold={0.9} /> : <></>}
             <Pixelation granularity={controls.pixelation} />
           </EffectComposer>
         </Suspense>
