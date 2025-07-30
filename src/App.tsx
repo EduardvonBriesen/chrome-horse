@@ -40,7 +40,7 @@ function App() {
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [0, 0, 100], fov: 60 }}
+        camera={{ position: [0, 0, 20], fov: 60 }}
         style={{
           filter: controls.blackAndWhite ? "grayscale(100%)" : "none",
           width: "100%",
