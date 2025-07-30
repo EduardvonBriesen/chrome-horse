@@ -1,17 +1,24 @@
-import { Mesh } from "three";
-import { useGraph } from "@react-three/fiber";
+import { Group, Mesh, type Object3DEventMap } from "three";
+import { useFrame, useGraph } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { SkeletonUtils } from "three-stdlib";
 import { useRef, useMemo } from "react";
 import { useControls } from "leva";
 
 export function Model() {
-  const group = useRef(null);
+  const group = useRef<Group<Object3DEventMap>>(null);
 
-  const { compressed } = useControls("Model", {
+  const { compressed, spin } = useControls("Model", {
     compressed: {
       value: false,
       label: "Compressed",
+    },
+    spin: {
+      value: 0,
+      min: 0,
+      max: 3,
+      step: 0.01,
+      label: "Spin",
     },
   });
   const { scene } = useGLTF(
@@ -20,6 +27,11 @@ export function Model() {
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes, materials } = useGraph(clone);
 
+  useFrame((state) => {
+    if (spin === 0 || !group.current) return;
+    group.current.rotation.y = state.clock.elapsedTime * spin;
+  });
+
   return (
     <group ref={group} dispose={null}>
       <group name="Scene">
@@ -27,9 +39,9 @@ export function Model() {
           name="Horse"
           geometry={(nodes.Horse as Mesh).geometry}
           material={materials["Material.001"]}
-          position={[0, 0, 0]}
+          position={[-2.5, 0, 0.8]}
           rotation={[0, Math.PI / 2, 0]}
-          scale={1}
+          scale={0.1}
         />
       </group>
     </group>

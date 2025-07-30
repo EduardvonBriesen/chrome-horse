@@ -108,27 +108,23 @@ export function Scene() {
     },
   });
 
-  const cameraControls = useControls("Camera", {
-    spin: {
-      value: false,
-      label: "Spin",
-    },
+  const { followMouse } = useControls("Camera", {
     followMouse: {
-      value: true,
+      value: 0,
+      min: 0,
+      max: 50,
+      step: 1,
       label: "Follow Mouse",
     },
   });
 
-  useFrame((state) => {
-    if (cameraControls.spin && ref.current) {
-      ref.current.setAzimuthalAngle(state.clock.elapsedTime * 0.5);
-    }
-
-    if (cameraControls.followMouse) {
-      camera.position.x = cameraInitialPosition.x - mousePos.current.x * 50;
-      camera.position.y = cameraInitialPosition.y - mousePos.current.y * 50;
-      camera.lookAt(0, 0, 0);
-    }
+  useFrame(() => {
+    if (followMouse === 0) return;
+    camera.position.x =
+      cameraInitialPosition.x - mousePos.current.x * followMouse;
+    camera.position.y =
+      cameraInitialPosition.y - mousePos.current.y * followMouse;
+    camera.lookAt(0, 0, 0);
   });
 
   useEffect(() => {
@@ -164,7 +160,7 @@ export function Scene() {
         ref={ref}
         enablePan={false}
         enableZoom={false}
-        enabled={!cameraControls.followMouse}
+        enabled={!followMouse}
       />
     </>
   );
