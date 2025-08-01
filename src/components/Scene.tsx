@@ -118,6 +118,23 @@ export function Scene() {
     },
   });
 
+  const { number, radius } = useControls("Model", {
+    number: {
+      value: 10,
+      min: 1,
+      max: 20,
+      step: 1,
+      label: "Number",
+    },
+    radius: {
+      value: 0,
+      min: 0,
+      max: 20,
+      step: 0.01,
+      label: "Radius",
+    },
+  });
+
   useFrame(() => {
     if (followMouse === 0) return;
     camera.position.x =
@@ -131,7 +148,6 @@ export function Scene() {
     const handleMouseMove = (event: { clientX: number; clientY: number }) => {
       mousePos.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mousePos.current.y = -((event.clientY / window.innerHeight) * 2 - 1);
-      console.log("Mouse moved", mousePos.current);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -145,7 +161,22 @@ export function Scene() {
   return (
     <>
       <Stage controls={ref} environment={null} shadows={false}>
-        <Model />
+        {Array.from({ length: number }).map((_, index) => {
+          const angle = (index * Math.PI * 2) / number;
+          return (
+            <group
+              key={index}
+              position={[
+                Math.sin(angle) * radius,
+                Math.cos(angle) * radius - 4,
+                0,
+              ]}
+              rotation={[Math.PI, 0, Math.PI + angle]}
+            >
+              <Model />
+            </group>
+          );
+        })}
         <SceneLight mousePos={mousePos.current} />
         <Environment
           {...(selectedOption.preset
@@ -156,12 +187,7 @@ export function Scene() {
           background={environment.show}
         />
       </Stage>
-      <OrbitControls
-        ref={ref}
-        enablePan={false}
-        enableZoom={false}
-        enabled={!followMouse}
-      />
+      <OrbitControls ref={ref} enabled={!followMouse} />
     </>
   );
 }
