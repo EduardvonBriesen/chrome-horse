@@ -10,11 +10,11 @@ export function Model() {
 
   const { compressed, spin } = useControls("Model", {
     compressed: {
-      value: false,
+      value: true,
       label: "Compressed",
     },
     spin: {
-      value: 0,
+      value: 0.5,
       min: 0,
       max: 3,
       step: 0.01,

@@ -120,7 +120,7 @@ export function Scene() {
 
   const { number, radius } = useControls("Model", {
     number: {
-      value: 10,
+      value: 8,
       min: 1,
       max: 20,
       step: 1,
@@ -128,7 +128,7 @@ export function Scene() {
     },
     radius: {
       value: 0,
-      min: 0,
+      min: -20,
       max: 20,
       step: 0.01,
       label: "Radius",
